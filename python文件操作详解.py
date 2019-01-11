@@ -83,15 +83,90 @@ case5：读写方式打开
 'a+'：追加方式读写打开，从文件尾开始读写
 """
 # 文件路径，文件内容为：this is test
-path=r'E:\workdir\readme.txt'
+path = r'E:\workdir\readme.txt'
 # 打开文件
-f=open(path,'r+')
-line=f.read()
+f = open(path, 'r+')
+line = f.read()
 print(line)
 # 写入文本
 f.write('end')
 # 关闭文件，文件尾写入end
-txt=f.read()
+txt = f.read()
 print(txt)
 f.close()
 # 结果：读取文件内容，并在文件尾插入end;
+
+
+"""
+3. 文件读取
+读取文件方法：
+    read(size=1,/): 读取指定字节或者读取完成，默认读取完成  
+    readline(size=-1,/): 读取一行
+    readlines(hint=-1./): 读取多行，默认读取完，返回每行组成列表
+
+准备工作：
+    readme.txt中添加四行：
+        1：语法
+        2：环境
+        3：逻辑处理
+        4：数据结构
+"""
+# case1：一次性读取
+path = r'E:\workdir\readme.txt'
+f = open(path)
+lines = f.read()
+print(lines)
+f.close()
+
+# case2 逐行读取
+path = r'E:\workdir\readme.txt'
+f = open(path)
+print("---------------------------------------------------")
+while True:
+    # 读取完，读取内容为‘’
+    line = f.readline()
+    if line:
+        print(line)
+    else:
+        break
+f.close()
+
+# case3 按行一次读完
+print('-----------------------------------------------------')
+path = r'E:\workdir\readme.txt'
+f = open(path)
+lines = f.readlines()
+print(lines)
+f.close()
+# lines为列表
+
+print('--------------------------------------------------')
+# case4：使用for循环逐行读取
+path = r'E:\workdir\readme.txt'
+with open(path) as f:
+    for line in f:
+        print(line)
+
+"""
+4. 文件写入
+write(text,/)：写入字符串，返回写入字节数
+writelines(lines,/)：写入多行
+"""
+print('-----------------------------------------------------')
+# '\n'为换行符
+info = ['java\n', 'c++\n']
+# 只写方式打开
+path = r'E:\workdir\testw.txt'
+f = open(path, 'w')
+# 写入一行
+f.write('python' + '\n')
+# 写入多行
+f.writelines(info)
+f.close()
+
+# 读取新写入的信息
+path = r'E:\workdir\testw.txt'
+f = open(path)
+lines = f.read()
+print(lines)
+f.close()
