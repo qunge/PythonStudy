@@ -48,3 +48,5 @@ def megreScore(fname, source1, source2):
 megreScore('result.txt', './chinese.txt', './math.txt')
 
 # 2.2 新的需求来了
+
+# 测试
