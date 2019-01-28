@@ -30,17 +30,17 @@ def download_files(msg):
     return '@%s@%s' % (typeSymbol, msg.fileName)
 
 
-# @itchat.msg_register(FRIENDS)
-# def add_friend(msg):
-#     msg.user.verify()
-#     msg.user.send('Nice to meet you!')
-#
-#
-# @itchat.msg_register(TEXT, isGroupChat=True)
-# def text_reply(msg):
-#     if msg.isAt:
-#         msg.user.send(u'@%s\u2005I received: %s' % (
-#             msg.actualNickName, msg.text))
+@itchat.msg_register(FRIENDS)
+def add_friend(msg):
+    msg.user.verify()
+    msg.user.send('Nice to meet you!')
+
+
+@itchat.msg_register(TEXT, isGroupChat=True)
+def text_reply(msg):
+    if msg.isAt:
+        msg.user.send(u'@%s\u2005I received: %s' % (
+            msg.actualNickName, msg.text))
 
 
 itchat.auto_login()
