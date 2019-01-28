@@ -1,16 +1,46 @@
 import itchat
-
-"""
-# 简单入门示例，有了itchat，如果你想要给文件传输助手发一条信息，只需要这样：
-itchat.auto_login()
-itchat.send('Hello,fileHelper', toUserName='filehelper')
-"""
+from itchat.content import *
 
 
-# 如果你想要回复发给自己的文本消息，只需要这样：回复同样的内容
-@itchat.msg_register(itchat.content.TEXT)
+@itchat.msg_register(TEXT, isFriendChat=True, isGroupChat=True, isMpChat=True)
+def simple_reply(msg):
+    return '%s' % msg.text
+
+
+@itchat.msg_register(PICTURE, isFriendChat=True, isGroupChat=True, isMpChat=True)
+def download_files(msg):
+    msg.download(msg.fileName)
+    typeSymbol = {
+        PICTURE: 'img',
+        VIDEO: 'vid', }.get(msg.type, 'fil')
+    return '@%s@%s' % (typeSymbol, msg.fileName)
+
+
+@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
 def text_reply(msg):
-    return msg.text
+    msg.user.send('%s' % msg.text)
+
+
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
+def download_files(msg):
+    msg.download(msg.fileName)
+    typeSymbol = {
+        PICTURE: 'img',
+        VIDEO: 'vid', }.get(msg.type, 'fil')
+    return '@%s@%s' % (typeSymbol, msg.fileName)
+
+
+# @itchat.msg_register(FRIENDS)
+# def add_friend(msg):
+#     msg.user.verify()
+#     msg.user.send('Nice to meet you!')
+#
+#
+# @itchat.msg_register(TEXT, isGroupChat=True)
+# def text_reply(msg):
+#     if msg.isAt:
+#         msg.user.send(u'@%s\u2005I received: %s' % (
+#             msg.actualNickName, msg.text))
 
 
 itchat.auto_login()
