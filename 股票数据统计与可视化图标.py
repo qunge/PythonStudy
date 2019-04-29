@@ -103,11 +103,91 @@ megreMoreScores('tresult2.txt', 20, './math.txt', './chinese.txt', './chinese.tx
 # 3. 股票统计分析
 """
 A股2018最后一个交易日的部分数据，下载地址：https://pan.baidu.com/s/1vKDE18Cgw8ZaTMJQepDdZQ
-3.1 价格区间统计
+最终实现代码如下：
 """
 
 
 # 生成价格与价格区间，价格区间与数量字典
 def genPriceRange(price_range):
     # 区间：数量字典
-    dresult=dict.fromkeys(price_range,0)
+    dresult = dict.fromkeys(price_range, 0)
+    # 价格：区间字典
+    price2range = {}
+    # 添加价格到区间元素
+    for item in price_range:
+        # 获取区间起始值与结束值
+        start, end = item.split('~')
+        # 添加价格到区间
+        for p in range(int(start), int(end)):
+            price2range[p] = item
+    return dresult, price2range
+
+
+# fname:文件路径
+# vrange:价格区间
+# col_index:列索引
+def countStocks(fname, vrange, col_index):
+    # 生成两个字典
+    dRange2nums, dPrice2Range = genPriceRange(vrange)
+    # 打开文件，编码格式为utf-8
+    f = open(fname, encoding='utf-8')
+    # 遍历文件
+    for line in f:
+        # 按','切分
+        info = line.split(',')
+        # 根据列取价格
+        price = info[col_index]
+        # 如果股票价格为‘-’，停牌股票不统计
+        if price != '-':
+            price = float(price)
+            prange = dPrice2Range[int(price)]
+            # 区间对应值加一
+            dRange2nums[prange] += 1
+    # 返回统计结果
+    return dRange2nums
+
+
+# 根据统计情况绘制图标
+def gensvg(data, title, output):
+    import pygal
+    # 柱状图
+    line_chart = pygal.Bar()
+    # 添加Title
+    line_chart.title = title
+    for key, val in data.items():
+        line_chart.add(key, val)
+    line_chart.render_to_file(output)
+
+
+# 定义价格区间，可以随意改变，最小差值为一，注意只能为整数
+price_range = ['0~1', '1~2', '2~3', '3~4', '4~6', '6~8', '8~10', '10~15', '15~20', '20~30', '30~50', '50~600']
+# 第三列为价格区间
+result = countStocks('2018_stocks.txt', price_range, 2)
+gensvg(result,'stock price 2018-12-28','stock_price.svg')
+print(result)
+
+# 涨幅统计
+# 定义涨幅区间，可以随意改变，最小差值为1
+# 注意只能为整数，新股涨停幅度可能到40%多
+t_range = ['-10~-8', '-8~-6', '-6~-3', '-3~0', '0~3', '3~6', '6~9', '9~50']
+# 文件第四列为价格区间
+result = countStocks('2018_stocks.txt', t_range, 4)
+
+print(result)
+
+# pygal模块，官方柱状图示例
+import pygal
+
+# 柱状图
+line_chart = pygal.Bar()
+# 添加Title
+line_chart.title = "Browser usage in February 2013(in %)"
+# 添加数据
+line_chart.add('IE', 19.5)
+line_chart.add('Firefox', 36.6)
+line_chart.add('Chrome', 36.3)
+line_chart.add('Safari', 4.5)
+line_chart.add('Opera', 2.3)
+# line_chart.render()
+# 保存成svg文件
+line_chart.render_to_file('browser.svg')
